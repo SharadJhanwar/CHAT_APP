@@ -1,0 +1,26 @@
+import express from "express";
+import "dotenv/config";
+import cors from "cors";
+import http from "http";
+import { connectDB } from "./lib/db.js";
+
+
+const app = express();
+const server = http.createServer(app);
+
+//Middleware setup
+app.use(express.json({limit:"4mb"})) //it will accept images upto 4 mb
+app.use(cors());
+
+
+
+//so when we run http://localhost:5000/api/status we can get message Server is Live
+app.use("/api/status",(req,res)=>res.send("Server is Live"));
+
+//Connect to mongoDB
+await connectDB()
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT,()=>{
+  console.log(`Server is running on http://localhost:${PORT}`)
+})
