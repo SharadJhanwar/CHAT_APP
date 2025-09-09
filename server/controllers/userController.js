@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs"
@@ -17,6 +18,9 @@ export const signup = async (req) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password,salt);
 
+
+    //User.create() method does 2 work!! first it will create a obj like const user = new User({}) and then save using await user.save()
+    
     const newUser = await User.create({
       fullName,email,password:hashedPassword,bio
     })
@@ -51,4 +55,32 @@ export const login = async (req,res) => {
     res.json({success:false,message:error.message})
   }
 
+}
+
+//controller to check if user is authenticated
+export const checkAuth = (req,res)=>{
+  res.json({success:true,user:req.user});
+}
+
+//controller to update profile details
+export const updateProfile = async (req,res) => {
+  try {
+    const {profilePic,bio,fullName } = req.body;
+    const userId = req.user._id;
+    let updatedUser;
+    if(!profilePic){
+      const updatedUser = await User.findByIdAndUpdate(userId, {bio,fullName}, {new:true})
+      //new true will give us the updated userData;
+    }else{
+      const upload = await cloudinary.uploader.upload(profilePic);
+
+      const updatedUser = await User.findByIdAndUpdate(userId, {profilePic:upload.secure_url,bio,fullName}, {new:true});
+    }
+
+    res.json({success:"true",user : updatedUser});
+
+  } catch (error) {
+    console.log("Some Error in updating : ",error.message);
+    res.json({success:"false",message:error.message});
+  }
 }
