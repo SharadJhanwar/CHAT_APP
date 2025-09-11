@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import http from "http";
 import { connectDB } from "./lib/db.js";
+import userRouter from "./routes/userRoutes.js";
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors());
 
 //so when we run http://localhost:5000/api/status we can get message Server is Live
 app.use("/api/status",(req,res)=>res.send("Server is Live"));
+app.use("/api/auth",userRouter);
 
 //Connect to mongoDB
 await connectDB()
