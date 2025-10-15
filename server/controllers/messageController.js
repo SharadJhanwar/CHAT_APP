@@ -39,7 +39,7 @@ export const getMessages = async (req,res) => {
       ]
     })
 
-    await Message.updateMany({senderId: selectedUserId,recieverId: mydId},{seen:true});
+    await Message.updateMany({senderId: selectedUserId,recieverId: myId},{seen:true});
 
     res.json({success:"true", messages});
 
@@ -56,6 +56,18 @@ export const markMessageAsSeen = async (req,res)=>{
     await Message.findByIdAndUpdate(id,{seen:true});
     res.json({success:true});
   } catch (error) {
-    console
+    console.log(error.message);
+    res.json({success:false,message : error.message});
+  }
+}
+
+// Send message to selected user
+export const sendMessage = async (req,res) => {
+  try{
+    const {text, image} = req.body;
+    const recieverId =  req.params.id;
+    const senderId = req.user._id;
+  }catch{
+
   }
 }
