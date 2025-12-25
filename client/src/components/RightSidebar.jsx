@@ -1,42 +1,51 @@
 import React from 'react'
 import assets, { imagesDummyData } from '../assets/assets'
 
-const RightSidebar = ({selectedUser}) => {
+const RightSidebar = ({ selectedUser, setSelectedUser }) => {
   return selectedUser && (
-    <div className={`bg-[#8185B2]/10 text-white w-full relative  overflow-y-scroll ${selectedUser ? "max-md:hidden":""}`}>
+    <div className={`bg-black/20 border-l border-gray-700 text-white w-full relative flex flex-col h-full ${selectedUser ? "max-md:hidden" : ""}`}>
+      <div className='flex-1 overflow-y-auto px-6 py-10'>
+        <div className='flex flex-col items-center gap-3 text-center'>
+          <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
+            className='w-24 h-24 rounded-full object-cover border-2 border-gray-600'
+          />
+          <div>
+            <h1 className='text-xl font-semibold flex items-center justify-center gap-2'>
+              {selectedUser.fullName}
+              <span className='w-2 h-2 rounded-full bg-green-500'></span>
+            </h1>
+            <p className='text-sm text-gray-400 mt-1'>{selectedUser.bio || "No bio available"}</p>
+          </div>
+        </div>
 
+        <hr className='border-gray-700 my-8' />
 
-
-      <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light '>
-        <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
-        className='w-20 aspect-[1/1] rounded-full'
-        />
- 
-        <h1 className='px-10 text-xl font-mSedium mx-auto flex item-center gap-2'>
-
-          {/*online circle*/}
-          <p className='w-2 h-2 rounded-full bg-green-500 mt-3'></p>
-          {selectedUser.fullName}
-        </h1>
-        <p className='px-10 mx-auto'>{selectedUser.bio}</p>
-      </div>
-
-      <hr className='border-[#ffffff50] my-4'/>
-
-      <div className='px-5 text-xs'>
-        <p>Media</p>
-        <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80'>
-          {imagesDummyData.map((url,index)=>{
-            <div key={index} onClick={()=> window.open(url)} className='cursor-pointer rounded'>
-              <img src={url} alt="" className='h-full rounded-md'/>
-            </div>
-          })}
+        <div className='text-sm flex-1'>
+          <p className="font-medium mb-4 text-gray-300">Shared Media</p>
+          <div className='grid grid-cols-3 gap-2 opacity-80'>
+            {imagesDummyData && imagesDummyData.map((url, index) => (
+              <div key={index} onClick={() => window.open(url)} className='aspect-square cursor-pointer rounded-lg overflow-hidden border border-gray-700 hover:border-violet-500 transition-all'>
+                <img src={url} alt="" className='w-full h-full object-cover' />
+              </div>
+            ))}
+          </div>
+          {(!imagesDummyData || imagesDummyData.length === 0) && (
+            <p className="text-center text-gray-500 py-4">No media shared yet</p>
+          )}
         </div>
       </div>
 
-      <button className='absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>Logout</button>
+      <div className="p-6 border-t border-gray-700">
+        <button
+          onClick={() => setSelectedUser(null)}
+          className='w-full py-3 bg-gray-100/10 hover:bg-gray-100/20 text-white rounded-lg transition-all text-sm font-medium'
+        >
+          Close Profile
+        </button>
+      </div>
     </div>
   )
 }
+
 
 export default RightSidebar
